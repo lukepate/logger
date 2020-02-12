@@ -1,9 +1,16 @@
+Todo: 
+-[] Describing why we need logging more in the first section
+-[] Describe more about Morgan - writing errors to the console
+-[] Describe more about winston - writing errors to a file 
+-[] Most details in the actual tutorial part 
+-[] Updating Github
+
+
 # Adding Server Logs to your Node.js App
 
 # Why do we need  logging?
 
 Any serious application with active users needs to be maintained. Part of that  maintenance phase consists of  analyzing your application's activity for potential bugs. Effective logging in some cases may become the last line of defense 
-
 
 Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and bring up some horror story.
 
@@ -33,50 +40,17 @@ Setting up proper logging can be overwhelming. In this tutorial, we're going to 
 
 ### Step 1 - Set Up
 
-To jump straight in, we're going to use the Express-Generator command line tool to scaffold out a simple Node.js API. If you aren't familiar, I definitely recommend looking more into Express-Generator and it's capabilities. 
-
- We'll start by installing express-generator.
-```shell
-touch app.js
-```
-Once the package is installed we're going use it to spin up an Express API. To create the app we use the 'express' keyword followed by the name of our new project.
-
-```shell
-npm init
-npm i express
-```
-
-```javascript
-const express = require('express')
-const app = express()
+[Clone this repo](https://github.com/lukepate/logger-) if you want to follow along with the tutorial.
 
 
-app.get('/', function (req, res) {
-res.send('Hello World')
-})
+### Step 2 - Installing Winston
 
-
-app.listen(3000)
-```
-
-
-Next we'll add a utility to ensure our start scripts run continuously. Forever is a perfect solution for keeping our application up and logging activity. 
-
-```shell
-npm install -g forever
-```
-Before we get too far, let's spin up our API and make sure everything's setup correctly.
-
-```shell
-forever app.js
-```
-If you navigate your browser to localhost:3000, you should see your index file
-
-
-Step 2 - Installing Winston
 Now that our app is up and running, lets install Winston.
 //add in more about the actual benefits of logging
+
+```shell
 npm install winston
+```
 We'll then create a config and logs folder for out log outputs
 
 ```shell
@@ -101,28 +75,54 @@ const logger = new winston.createLogger({
 module.exports = logger;
 ```
 
-Step 3 - Adding Logs
-Now we'll go to our app.js and import our Winston logger we just created
-const winston = require('./config/winston');
+### Step 3 - Adding Logs
+
 Now we can start writing our errors to a file and log them. Let's add our first log. 
 
+Your app.js file should look like this:
 ```javascript
-// Finish When to log them
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-winston.error(`${err.status} - ${req.method} - ${req.originalUrl} - ${err.message} - ${req.ip}`);
-// render the error page
-  res.status(err.status || 500);
-  res.render('error');
+const express = require('express');
+const app = express();
+const morgan = require('morgan');
+const logger = require('./config/winston');
+const port = 8080
+
+app.use(morgan("combined", { stream: logger.stream.write }));
+
+app.get('/', function(req, res) {
+    throw new Error('error thrown navigating to');
 });
 
+app.use(function(err, req, res, next) {
+  logger.error(`${req.method} - ${req.originalUrl} - ${err.message} - ${req.ip}`);
+  next(err)
+})  
+
+app.listen(port, console.log(`Listening on port ${port}!`));
 ```
 
-Now we're ready to start our server 
-forever app.js
-Open a new Terminal window while our Node.js server is still running and we can tail our logs to see our errors as they populate.
+We'll need to install our new dependencies
+
+```shell
+npm install 
+```
+
+Now we're ready to start our server and see our logs. In one terminal window, start the application:
+
+```shell
+node app.js 
+```
+
+Then, open a new Terminal window and tail the error file. This will allow you to see new logs being written to the file. Tail outputs the content of a file as lines are added to it.
+
+Run the following command in the second terminal window:
+
+```shell
 tail -f ./logs/error.log
-If force our app to throw an error by navigating our browser to a URL our app can't route to, we should see our logger outputting errors to our log file.
+```
+
+Now if we navigate our browser to [localhost:8080](http://localhost:8080) we can see errors as they are written to /logs/error.log. After you load the page, you should see something like this:
+
+```
+{"message":"GET - / - error thrown navigating to - ::1","level":"error"}
+```
