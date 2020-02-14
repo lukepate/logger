@@ -8,9 +8,9 @@ Todo:
 
 # Adding Server Logs to your Node.js App
 
-# Why do we need  logging?
+## Why do we need  logging?
 
-Any serious application with active users needs to be maintained. Part of that  maintenance phase consists of  analyzing your application's activity for potential bugs. Effective logging in some cases may become the last line of defense 
+Any good application with active users needs to be maintained. Part of that  maintenance phase consists of  analyzing your application's activity for potential bugs. Effective logging in some cases may become the last line of defense 
 
 Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and bring up some horror story.
 
@@ -28,45 +28,49 @@ As for what to send to the logs, that's more particular  to your applications an
 - Status Codes 
 - Methods
 
-How should we log it?
-// explain Console.log
-// Explain winston.js 
+
+## Morgan 
+If your application communicates via HTTP, you'll want some kind of middleware to monitor incoming request. Morgan is a request logger that does just that. It's easy to install and has a lot of customizing and formatting. 
+
+## Winston
+Once we've captured our requests, we'll want some kind of way to persist that data. There's an abundance of logging options out there in the Javascript ecosystem. For this example we'll be using Winston. Winston is a powerful library that makes logging to file simple. It supports multiple transports, child loggers, custom levels and much more. 
 
 
-## Prereqs?
-
-
-Setting up proper logging can be overwhelming. In this tutorial, we're going to be creating a simple event log using Node.js and Winston.
 
 ### Step 1 - Set Up
+To start off, we'll clone this starter repo containing a simple Express API.
 
 [Clone this repo](https://github.com/lukepate/logger-) if you want to follow along with the tutorial.
 
 
 ### Step 2 - Installing Winston
 
-Now that our app is up and running, lets install Winston.
-//add in more about the actual benefits of logging
+Now that our app is up and running, lets install Winston. 
 
 ```shell
 npm install winston
 ```
-We'll then create a config and logs folder for out log outputs
+
+We'll go ahead and create two folders to keep our Winston code and Log outputs files.
 
 ```shell
 mkdir ./logs ./config 
 ```
-Now we'll create a file for Winston Logger configuration and add some code to it.
+
+Create a file for our Winston Logger configuration.
 
 ```shell
 touch ./config/winston.js
 ```
-// go over actual logging details
+
+
+We'll start by creating a new logger with the winston.createLogger method. CreateLogger accepts a few parameters such as 'format' and 'silent', but for now we're just going to pass 'level', 'exitOnError and 'transports' to create a basic logger implementation.
 
 ```javascript
 const winston = require('winston');
 // creates a new Winston Logger
 const logger = new winston.createLogger({
+  level: 'info' 
   transports: [
     new winston.transports.File({ filename: './logs/error.log', level: 'error' }),
   ],
@@ -75,9 +79,13 @@ const logger = new winston.createLogger({
 module.exports = logger;
 ```
 
+
 ### Step 3 - Adding Logs
 
-Now we can start writing our errors to a file and log them. Let's add our first log. 
+Now that we have a logger, we'll need a way to use it. 
+Let's create a simple Express API to reenact some web traffic so our logger can capture some activity.  
+For capturing HTTP requests we're going to use Morgan. 
+
 
 Your app.js file should look like this:
 ```javascript
