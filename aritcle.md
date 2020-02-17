@@ -38,9 +38,16 @@ Once we've captured our requests, we'll want some kind of way to persist that da
 
 
 ### Step 1 - Set Up
+
 To start off, we'll clone this starter repo containing a simple Express API.
 
 [Clone this repo](https://github.com/lukepate/logger-) if you want to follow along with the tutorial.
+
+Make sure to install all of the projects dependencies
+
+```shell
+npm install 
+```
 
 
 ### Step 2 - Installing Winston
@@ -51,18 +58,17 @@ Now that our app is up and running, lets install Winston.
 npm install winston
 ```
 
-We'll go ahead and create two folders to keep our Winston code and Log outputs files.
+We'll go ahead and create two folders. One for our Winston code and one for our log outputs.
 
 ```shell
 mkdir ./logs ./config 
 ```
 
-Create a file for our Winston Logger configuration.
+Create a file for our Winston Logger configuration.**
 
 ```shell
 touch ./config/winston.js
 ```
-
 
 We'll start by creating a new logger with the winston.createLogger method. CreateLogger accepts a few parameters such as 'format' and 'silent', but for now we're just going to pass 'level', 'exitOnError and 'transports' to create a basic logger implementation.
 
@@ -82,9 +88,9 @@ module.exports = logger;
 
 ### Step 3 - Adding Logs
 
-Now that we have a logger, we'll need a way to use it. 
-Let's create a simple Express API to reenact some web traffic so our logger can capture some activity.  
-For capturing HTTP requests we're going to use Morgan. 
+Now that we have our logger installed, we'll need a way to use it. In our App.js file were going to bring in Morgan
+for capturing HTTP requests. We'll use Morgans standard "combined" format and pass the stream to our Winston logger. 
+In our app.get we're going to intentionally have the route throw an exception to stream that error to our Winston logger. You can see we're using the error method and sending a custom string of some of the requests data. This is the information that we're going to see on our log files, so feel free to customize it to your app's needs.   
 
 
 Your app.js file should look like this:
@@ -102,26 +108,20 @@ app.get('/', function(req, res) {
 });
 
 app.use(function(err, req, res, next) {
-  logger.error(`${req.method} - ${req.originalUrl} - ${err.message} - ${req.ip}`);
+  logger.error(`${req.method} - ${err.message}  - ${req.originalUrl} - ${req.ip}`);
   next(err)
 })  
 
 app.listen(port, console.log(`Listening on port ${port}!`));
 ```
 
-We'll need to install our new dependencies
-
-```shell
-npm install 
-```
-
-Now we're ready to start our server and see our logs. In one terminal window, start the application:
+Now we're ready to start our server and see our logs. In one terminal window, start the application with:
 
 ```shell
 node app.js 
 ```
 
-Then, open a new Terminal window and tail the error file. This will allow you to see new logs being written to the file. Tail outputs the content of a file as lines are added to it.
+Then, open a new Terminal window and tail the error file. This will allow you to see new logs being written to our file. Tail outputs the content of a file as lines are added to it.
 
 Run the following command in the second terminal window:
 
@@ -134,3 +134,5 @@ Now if we navigate our browser to [localhost:8080](http://localhost:8080) we can
 ```
 {"message":"GET - / - error thrown navigating to - ::1","level":"error"}
 ```
+
+Now we have a simple API logging exceptions with Winston as they are thrown. We didn't touch on even half of Winston's additional logging features, but this is a good starting point to dive in. Good luck!  

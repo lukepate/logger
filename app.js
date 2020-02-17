@@ -11,7 +11,7 @@ app.get('/', function(req, res) {
 });
 
 app.use(function(err, req, res, next) {
-  logger.error(`${req.method} - ${req.originalUrl} - ${err.message} - ${req.ip}`);
+  logger.error(`${req.method} - ${err.message}  - ${req.originalUrl} - ${req.ip}`);
   next(err)
 })  
 
