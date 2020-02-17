@@ -2,7 +2,7 @@ Todo:
 -[] Describing why we need logging more in the first section
 -[] Describe more about Morgan - writing errors to the console
 -[] Describe more about winston - writing errors to a file 
--[] Most details in the actual tutorial part 
+-[x] Most details in the actual tutorial part 
 -[] Updating Github
 
 
@@ -10,9 +10,7 @@ Todo:
 
 ## Why do we need  logging?
 
-Any good application with active users needs to be maintained. Part of that  maintenance phase consists of  analyzing your application's activity for potential bugs. Effective logging in some cases may become the last line of defense 
-
-Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and bring up some horror story.
+Any good application with active users needs to be maintained. Part of that maintenance phase consists of analyzing your application's activity for potential bugs. Effective logging in some cases may become the last line of defense when a debugging a critical production issue. Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and bring up some war story and how it could have been prevented by better error logging.
 
 
 ## What Info should we log?
@@ -64,13 +62,13 @@ We'll go ahead and create two folders. One for our Winston code and one for our 
 mkdir ./logs ./config 
 ```
 
-Create a file for our Winston Logger configuration.**
+Create a file for our Winston Logger configuration. This is to simply to organize our loggers and keep them to their own directory. 
 
 ```shell
 touch ./config/winston.js
 ```
 
-We'll start by creating a new logger with the winston.createLogger method. CreateLogger accepts a few parameters such as 'format' and 'silent', but for now we're just going to pass 'level', 'exitOnError and 'transports' to create a basic logger implementation.
+We'll start by creating a new logger with the winston.createLogger method. CreateLogger accepts a few parameters such as 'format' and 'silent', but for now we're going to pass 'level', 'exitOnError and 'transports' to create a basic logger implementation. You can see in our transports that we're defining a filename and path to send our logging. 
 
 ```javascript
 const winston = require('winston');
@@ -115,7 +113,7 @@ app.use(function(err, req, res, next) {
 app.listen(port, console.log(`Listening on port ${port}!`));
 ```
 
-Now we're ready to start our server and see our logs. In one terminal window, start the application with:
+Now we're ready to start our server and see our logs in action. In one terminal window, start the application with:
 
 ```shell
 node app.js 
@@ -135,4 +133,4 @@ Now if we navigate our browser to [localhost:8080](http://localhost:8080) we can
 {"message":"GET - / - error thrown navigating to - ::1","level":"error"}
 ```
 
-Now we have a simple API logging exceptions with Winston as they are thrown. We didn't touch on even half of Winston's additional logging features, but this is a good starting point to dive in. Good luck!  
+Now we have a simple API logging exceptions with Winston as they are thrown. I highly recommend jumping into the Winston docs and learning more about capabilities. We didn't touch on even half of Winston's additional logging features, but this is a good starting point to dive in. Good luck!  
