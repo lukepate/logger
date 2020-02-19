@@ -1,16 +1,10 @@
-Todo: 
--[x] Describing why we need logging more in the first section
--[x] Describe more about Morgan - writing errors to the console
--[x] Describe more about winston - writing errors to a file 
--[x] Most details in the actual tutorial part 
--[] Updating Github
-
-
 # Adding Server Logs to your Node.js App
 
 ## Why do we need logging?
 
-Any good application with active users needs to be maintained. Part of that maintenance phase consists of analyzing your application's activity for potential issues or bugs. Effective logging in some cases may become the last line of defense when a debugging a critical production issue. Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and have some war story that could have been prevented by effective error logging. In this tutorial, we'll be doing just that. We'll create a simple Node API that captures it's request and writes exceptions to a logging file to be stored and view at a later time. 
+Any good application with active users needs to be maintained. Part of that maintenance phase consists of analyzing your application's activity for potential issues or bugs. Effective logging in some cases may become the last line of defense when a debugging a critical production issue. Ask anyone who's ever had to debug any serious production bug without efficient logging and they'll most likely agree and have some war story that could have been prevented by effective error logging.
+
+ In this tutorial, we'll be doing just that. We'll create a simple Node API that captures it's request and writes exceptions to a logging file to be stored and view at a later time. 
 
 
 ## What Info should we log?
@@ -29,13 +23,13 @@ As for what exactly to the logs, that's more particular to your applications and
 
 ## How are we going to log?
 
-This might be the hardest part to logging, picking an appropriate logger. There's no shortage of logging options out there in the Javascript ecosystem and quite frankly most are going to get the job done. My suggestion would be to start with one that has a particular feature you know you need and decent documentation. Today we'll be using Morgan and Winston who both have very great documentation.    
+This might be the hardest part to logging, picking an appropriate logger. There's no shortage of logging options out there in the Javascript ecosystem and really most are going to get the job done. My suggestion would be to start with one that has a particular feature you know you need and decent documentation. Today we'll be using Morgan and Winston who both have very great documentation.    
 
-### Morgan 
+#### Morgan 
 If your application communicates via HTTP, you'll want some kind of middleware to monitor incoming request. Morgan is a request logger that does just that. It's easy to install and has a lot of customizing and formatting benefits. We'll be using Morgan to communicate our web traffic requests to our application in a reasonable format.
 
-### Winston
-Once we've captured our requests, we'll want some kind of way to persist that data to view at a later time. For this example we'll be using Winston. Winston is a powerful library that makes logging to file simple. It supports multiple transports, child loggers, custom levels and much more. Winston at it's core is designed to be simple to use, so we'll be using it to simply catch our errors and write them to file. 
+#### Winston
+Once we've captured our requests, we'll want some kind of way to persist that data to view at a later time. For this example we'll be using Winston. Winston is a powerful library that makes logging to file simple. It supports multiple transports, child loggers, custom levels and much more. Winston at it's core is designed to be simple to use, so we'll be using it to catch our errors and write them to file. 
 
 
 
@@ -50,7 +44,6 @@ Make sure to install all of the projects dependencies
 ```shell
 npm install 
 ```
-
 
 
 ### Step 2 - Installing Winston
